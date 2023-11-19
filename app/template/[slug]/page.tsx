@@ -28,7 +28,7 @@ export default function Page() {
 
   return (
     <>
-      <SubHeader>Template {template?.name}</SubHeader>
+      <SubHeader>{template?.name} - Template</SubHeader>
       <main className={styles.main}>
         {routines.length ? (
           <ul className="routine-list">

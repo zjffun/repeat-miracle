@@ -5,14 +5,27 @@
   right: 0;
   bottom: 0;
 
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: rgb(var(--background-rgb));
 
   :global(input) {
-    color: black;
+    color: rgb(var(--foreground-rgb));
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  height: var(--header-height);
+  width: 100%;
+  .close {
+    flex: 0 0 auto;
+    cursor: pointer;
+  }
+  .title {
+    flex: 1;
+    text-align: center;
+  }
+  .save {
+    flex: 0 0 auto;
   }
 }

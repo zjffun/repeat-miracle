@@ -1,3 +1,6 @@
+import { faClose, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classnames from "classnames";
 import { useRef, useState } from "react";
 
 import { IRoutine } from "../types";
@@ -56,17 +59,28 @@ export default function AddTemplate({
     onCreate();
   }
 
-  function handleCancelClick() {
+  function handleCloseClick() {
     onCancel();
   }
 
   return (
     <section className={styles.addTemplate}>
-      <span>Name:</span>
-      <input ref={templateNameInputRef} name="name" type="text" />
-      <button onClick={handleCreateClick}>Create</button>
-      <button onClick={handleCancelClick}>Cancel</button>
-      <table>
+      <header className={styles.header}>
+        <div className={classnames(styles.close)} onClick={handleCloseClick}>
+          <FontAwesomeIcon height="1em" icon={faClose} />
+        </div>
+
+        <span className={styles.title}>New Template</span>
+
+        <button className={styles.save} onClick={handleCreateClick}>
+          Save
+        </button>
+      </header>
+      <label>
+        <span>Name: </span>
+        <input ref={templateNameInputRef} name="name" type="text" />
+      </label>
+      <table className="mt-2 mb-2">
         <thead>
           <tr>
             <th>Name</th>
@@ -83,7 +97,7 @@ export default function AddTemplate({
                 <td>{minutesToHhmm(d.startTime)}</td>
                 <td>{minutesToHhmm(d.endTime)}</td>
                 <td onClick={() => handleDeleteClick(i)}>
-                  <button>delete</button>
+                  <FontAwesomeIcon height="1em" icon={faTrash} />
                 </td>
               </tr>
             );
@@ -92,18 +106,18 @@ export default function AddTemplate({
       </table>
       <form ref={formRef}>
         <label>
-          <span>Name:</span>
+          <span>Name: </span>
           <input name="name" type="text" />
         </label>
         <label>
-          <span>Start time:</span>
+          <span>Start time: </span>
           <input name="startTime" type="time" />
         </label>
         <label>
-          <span>End time:</span>
+          <span>End time: </span>
           <input name="endTime" type="time" />
         </label>
-        <div>
+        <div className="mt-2">
           <button onClick={handleAddClick}>Add Routine</button>
         </div>
       </form>

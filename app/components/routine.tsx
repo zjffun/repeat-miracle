@@ -1,15 +1,15 @@
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import dayjs from "dayjs";
 
 import { IRoutine } from "../types";
+import { minutesToHhmm } from "../utils/time";
 
 import styles from "./routine.module.css";
 
 export default function Routine({ data }: { data: IRoutine }) {
   const name = data.name;
-  const startTime = dayjs(data.startTime).format("hh:mm");
-  const endTime = dayjs(data.endTime).format("hh:mm");
+  const startTime = minutesToHhmm(data.startTime);
+  const endTime = minutesToHhmm(data.endTime);
   const note = "";
 
   return (

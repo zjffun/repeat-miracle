@@ -1,5 +1,7 @@
 "use client";
 
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -35,11 +37,13 @@ export default function Home() {
         <div className="flex flex-1">
           Templates
           <span className="flex-1"></span>
-          <button onClick={handleAddClick}>Add</button>
+          <div onClick={handleAddClick}>
+            <FontAwesomeIcon width="1em" icon={faPlus} />
+          </div>
         </div>
       </SubHeader>
       <main className={styles.main}>
-        <ul>
+        <ul className="list">
           {templates.map((d) => {
             return (
               <li key={d.id} onClick={() => showTemplate(d.id)}>
