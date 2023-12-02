@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { ITemplate } from "@/app/types";
@@ -11,35 +11,50 @@ import SubHeader from "../../components/sub-header";
 import styles from "./page.module.css";
 
 export default function Page() {
+  const router = useRouter();
+
   const [template, setTemplate] = useState<ITemplate | null>(null);
 
   const params = useParams();
 
-  useEffect(() => {
+  function handleEditClick() {
+    router.push(`/upsert-template/${params.slug}`);
+  }
+
+  function updateTemplateData() {
     const tmp = getTemplate(params.slug as string);
     if (!tmp) {
       return;
     }
 
     setTemplate(tmp);
+  }
+
+  useEffect(() => {
+    updateTemplateData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.slug]);
 
   const routines = template?.routines || [];
 
   return (
     <>
-      <SubHeader>{template?.name} - Template</SubHeader>
+      <SubHeader
+        actionItems={
+          <md-icon-button onClick={handleEditClick}>
+            <md-icon>edit_square</md-icon>
+          </md-icon-button>
+        }
+      >
+        <span>{template?.name} - Template</span>
+      </SubHeader>
       <main className={styles.main}>
         {routines.length ? (
-          <ul className="routine-list">
+          <md-list>
             {routines.map((d, i) => {
-              return (
-                <li key={i}>
-                  <Routine data={d}></Routine>
-                </li>
-              );
+              return <Routine key={i} data={d}></Routine>;
             })}
-          </ul>
+          </md-list>
         ) : (
           <div>No routines.</div>
         )}

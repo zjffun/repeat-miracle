@@ -1,25 +1,37 @@
 "use client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import classnames from "classnames";
-
-import styles from "./sub-header.module.css";
-
-export default function SubHeader({ children }: { children: React.ReactNode }) {
+export default function SubHeader({
+  children,
+  actionItems,
+}: {
+  children: React.ReactNode;
+  actionItems?: React.ReactNode[] | React.ReactNode;
+}) {
   function handleBackClick() {
     history.back();
   }
 
-  return (
-    <header className={styles.header}>
-      <h2 className={styles.title}>
-        <div className={classnames(styles.back)} onClick={handleBackClick}>
-          <FontAwesomeIcon height='1em' icon={faAngleLeft} />
-        </div>
+  let _actionItems: React.ReactNode[] = [];
 
-        {children}
-      </h2>
-    </header>
+  if (actionItems) {
+    _actionItems = Array.isArray(actionItems) ? actionItems : [actionItems];
+  }
+
+  return (
+    <mwc-top-app-bar-fixed>
+      <div slot="navigationIcon" onClick={handleBackClick}>
+        <md-icon-button>
+          <md-icon>arrow_back_ios_new</md-icon>
+        </md-icon-button>
+      </div>
+
+      <div slot="title">{children}</div>
+
+      {_actionItems.map((item, index) => (
+        <div key={index} slot="actionItems">
+          {item}
+        </div>
+      ))}
+    </mwc-top-app-bar-fixed>
   );
 }

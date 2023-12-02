@@ -1,30 +1,22 @@
 "use client";
 
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import AddTemplate from "../components/add-template";
 import SubHeader from "../components/sub-header";
 import { ITemplate } from "../types";
 import { getTemplates } from "../utils/templates";
 
 import styles from "./page.module.css";
+import Link from "next/link";
 
-export default function Home() {
+export default function Page() {
   const router = useRouter();
 
   const [templates, setTemplates] = useState<ITemplate[]>([]);
 
-  const [addVisible, setAddVisible] = useState(false);
-
-  function showTemplate(id: string) {
-    router.push(`/template/${id}`);
-  }
-
   function handleAddClick() {
-    setAddVisible(true);
+    router.push("/upsert-template");
   }
 
   useEffect(() => {
@@ -33,35 +25,28 @@ export default function Home() {
 
   return (
     <>
-      <SubHeader>
-        <div className="flex flex-1">
-          Templates
-          <span className="flex-1"></span>
-          <div onClick={handleAddClick}>
-            <FontAwesomeIcon width="1em" icon={faPlus} />
-          </div>
-        </div>
+      <SubHeader
+        actionItems={
+          <md-icon-button onClick={handleAddClick}>
+            <md-icon>add</md-icon>
+          </md-icon-button>
+        }
+      >
+        Templates
       </SubHeader>
       <main className={styles.main}>
-        <ul className="list">
+        <md-list className="list">
           {templates.map((d) => {
             return (
-              <li key={d.id} onClick={() => showTemplate(d.id)}>
-                {d.name}
-              </li>
+              <Link key={d.id} href={`/template/${d.id}`}>
+                <md-list-item>
+                  <div slot="headline">{d.name}</div>
+                </md-list-item>
+              </Link>
             );
           })}
-        </ul>
+        </md-list>
       </main>
-      {addVisible && (
-        <AddTemplate
-          onCreate={() => {
-            setTemplates(getTemplates());
-            setAddVisible(false);
-          }}
-          onCancel={() => setAddVisible(false)}
-        ></AddTemplate>
-      )}
     </>
   );
 }

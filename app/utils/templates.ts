@@ -16,20 +16,41 @@ export function getTemplate(id: string) {
   return templates.find((day) => day.id === id);
 }
 
-export function addTemplate({
+export function saveTemplate(templates: ITemplate[]) {
+  localStorage.setItem("repeat-miracle-templates", JSON.stringify(templates));
+}
+
+export function upsertTemplate({
+  id,
   name,
   routines,
 }: {
+  id?: string;
   name: string;
   routines: IRoutine[];
 }) {
   const templates = getTemplates();
-  const newTemplates = [...templates, { id: nanoid(), name, routines }];
 
-  localStorage.setItem(
-    "repeat-miracle-templates",
-    JSON.stringify(newTemplates)
-  );
+  if (id) {
+    // update
+    let newTemplate;
+    const newTemplates = templates.map((d) => {
+      if (d.id === id) {
+        newTemplate = { ...d, name, routines };
+        return newTemplate;
+      }
+      return d;
+    });
+
+    saveTemplate(newTemplates);
+    return newTemplate;
+  }
+
+  // insert
+  const newTemplate = { id: nanoid(), name, routines };
+  const newTemplates = [...templates, newTemplate];
+  saveTemplate(newTemplates);
+  return newTemplate;
 }
 
 export function setTemplate({

@@ -11,17 +11,30 @@ export default function Page() {
     <>
       <SubHeader>Config</SubHeader>
       <main className={styles.main}>
-        <ul className="list">
-          <li>
-            <Link className="full-link" href="/templates">
-              <FontAwesomeIcon width="1em" icon={faFile} /> Templates
-            </Link>
-          </li>
+        <md-list>
+          <Link href="/templates">
+            <md-list-item>
+              <div slot="headline">
+                <md-icon
+                  style={{
+                    fontSize: "1rem",
+                    height: "1rem",
+                    width: "1rem",
+                    marginRight: "0.25rem",
+                  }}
+                >
+                  description
+                </md-icon>
+                Templates
+              </div>
+            </md-list-item>
+          </Link>
+
           {/* TODO: implement */}
           {/* <li>
             <Link href="/routines">Today routines</Link>
           </li> */}
-        </ul>
+        </md-list>
       </main>
     </>
   );

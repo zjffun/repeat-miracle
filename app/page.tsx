@@ -1,14 +1,11 @@
 "use client";
-
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
 import Header from "./components/header";
 import Routine from "./components/routine";
 import { IRoutine } from "./types";
-
-import styles from "./page.module.css";
 import { getDay, setDay } from "./utils/days";
-import dayjs from "dayjs";
 import { getTemplates } from "./utils/templates";
 
 export default function Page() {
@@ -43,21 +40,15 @@ export default function Page() {
   return (
     <>
       <Header></Header>
-      <main className={styles.main}>
-        {routines.length ? (
-          <ul className="routine-list">
-            {routines.map((d, i) => {
-              return (
-                <li key={i}>
-                  <Routine data={d}></Routine>
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <div>No routines.</div>
-        )}
-      </main>
+      {routines.length ? (
+        <md-list className="routine-list">
+          {routines.map((d, i) => {
+            return <Routine key={i} data={d}></Routine>;
+          })}
+        </md-list>
+      ) : (
+        <div>No routines.</div>
+      )}
     </>
   );
 }

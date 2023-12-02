@@ -1,24 +1,25 @@
-import { faClose, faTrash } from "@fortawesome/free-solid-svg-icons";
+"use client";
+
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classnames from "classnames";
-import { useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 
-import { IRoutine } from "../types";
-import { addTemplate } from "../utils/templates";
-import { hhmmToMinutes, minutesToHhmm } from "../utils/time";
+import { IRoutine } from "../../types";
+import { getTemplate, upsertTemplate } from "../../utils/templates";
+import { hhmmToMinutes, minutesToHhmm } from "../../utils/time";
 
-import styles from "./add-template.module.scss";
+import { useParams, useRouter } from "next/navigation";
+import SubHeader from "../../components/sub-header";
+import styles from "./page.module.scss";
 
-export default function AddTemplate({
-  onCreate,
-  onCancel,
-}: {
-  onCreate: () => void;
-  onCancel: () => void;
-}) {
+export default function Page() {
+  const params = useParams();
+
+  const templateId = params.slug?.[0];
+
+  const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
-  const templateNameInputRef = useRef<HTMLInputElement>(null);
-
+  const [templateName, setTemplateName] = useState("");
   const [routines, setRoutines] = useState<IRoutine[]>([]);
 
   function handleDeleteClick(index: number) {
@@ -50,35 +51,51 @@ export default function AddTemplate({
     });
   }
 
-  function handleCreateClick() {
-    addTemplate({
-      name: templateNameInputRef.current?.value || "template",
+  function handleSaveClick() {
+    upsertTemplate({
+      id: templateId,
+      name: templateName || "template",
       routines,
     });
 
-    onCreate();
+    router.back();
   }
 
-  function handleCloseClick() {
-    onCancel();
+  function handleTemplateNameInput(e: ChangeEvent<HTMLInputElement>) {
+    const name = e.target.value;
+    setTemplateName(name);
   }
+
+  useEffect(() => {
+    if (!templateId) return;
+
+    const template = getTemplate(templateId);
+
+    if (!template) return;
+
+    setTemplateName(template.name);
+    setRoutines(template.routines);
+  }, [templateId]);
 
   return (
     <section className={styles.addTemplate}>
-      <header className={styles.header}>
-        <div className={classnames(styles.close)} onClick={handleCloseClick}>
-          <FontAwesomeIcon height="1em" icon={faClose} />
-        </div>
-
-        <span className={styles.title}>New Template</span>
-
-        <button className={styles.save} onClick={handleCreateClick}>
-          Save
-        </button>
-      </header>
+      <SubHeader
+        actionItems={
+          <md-icon-button onClick={handleSaveClick}>
+            <md-icon>save</md-icon>
+          </md-icon-button>
+        }
+      >
+        Templates
+      </SubHeader>
       <label>
         <span>Name: </span>
-        <input ref={templateNameInputRef} name="name" type="text" />
+        <input
+          value={templateName}
+          onInput={handleTemplateNameInput}
+          name="name"
+          type="text"
+        />
       </label>
       <table className="mt-2 mb-2">
         <thead>
