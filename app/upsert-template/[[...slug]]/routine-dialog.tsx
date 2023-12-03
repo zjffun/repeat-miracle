@@ -62,6 +62,10 @@ export default function RoutineDialog({
             name="name"
             value={currentName}
             onInput={(e: any) => setCurrentName(e.target.value)}
+            style={{
+              width: "100%",
+              marginBottom: "1rem",
+            }}
           ></md-filled-text-field>
 
           <TimeRange
@@ -79,6 +83,12 @@ export default function RoutineDialog({
             value="cancel"
             onClick={() => {
               dialogRef.current?.close();
+            }}
+            style={{
+              "--md-text-button-label-text-color":
+                "var(--md-sys-color-on-surface)",
+              "--md-text-button-hover-label-text-color":
+                "var(--md-sys-color-on-surface)",
             }}
           >
             Cancel

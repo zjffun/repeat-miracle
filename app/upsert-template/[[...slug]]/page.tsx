@@ -41,7 +41,7 @@ export default function Page() {
     setCurrentRoutine({
       name: "",
       startTime: 0,
-      endTime: 0,
+      endTime: 8 * 60,
     });
     setOpeningRoutineDialog(true);
   }

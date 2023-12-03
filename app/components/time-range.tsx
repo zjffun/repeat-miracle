@@ -57,10 +57,14 @@ export default function TimeRange({
 
   return (
     <section>
-      <div>
-        {minutesToHhmm(currentStartMinute)} - {minutesToHhmm(currentEndMinute)}{" "}
-        | {minutesToReadable(currentStartMinute, currentEndMinute)}
-      </div>
+      <p
+        style={{
+          textAlign: "center",
+          fontSize: "1.2rem",
+        }}
+      >
+        {minutesToHhmm(currentStartMinute)} - {minutesToHhmm(currentEndMinute)}
+      </p>
       <div>
         <circular-time-range-picker
           ref={circularTimeRangePickerRef}
@@ -68,6 +72,13 @@ export default function TimeRange({
           end={endMinute * 60}
         ></circular-time-range-picker>
       </div>
+      <p
+        style={{
+          textAlign: "center",
+        }}
+      >
+        {minutesToReadable(currentStartMinute, currentEndMinute)}
+      </p>
     </section>
   );
 }

@@ -60,8 +60,8 @@ class CircularTimeRangePicker extends HTMLElement {
     super();
   }
 
-  width = 300;
-  height = 300;
+  width = 250;
+  height = 250;
   radius = 100;
   startAngle = 0;
   endAngle = 0;
@@ -88,38 +88,35 @@ class CircularTimeRangePicker extends HTMLElement {
     const scalesGroupEl = createSvgElement("g");
 
     // init
-    svgEl.setAttribute("viewBox", "0 0 300 300");
-    svgEl.setAttribute("width", "300");
-    svgEl.setAttribute("height", "300");
+    svgEl.setAttribute("viewBox", `0 0 ${this.width} ${this.height}`);
+    svgEl.setAttribute("width", this.width);
+    svgEl.setAttribute("height", this.height);
     svgEl.setAttribute("class", "circular-time-range-picker");
 
-    circleEl.setAttribute("cx", 150);
-    circleEl.setAttribute("cy", 150);
-    circleEl.setAttribute("r", 100);
-    circleEl.setAttribute("stroke", "#ddd");
+    circleEl.setAttribute("class", "circular-time-range-picker__circle");
+    circleEl.setAttribute("cx", this.width / 2);
+    circleEl.setAttribute("cy", this.height / 2);
+    circleEl.setAttribute("r", this.radius);
     circleEl.setAttribute("fill", "none");
     circleEl.setAttribute("stroke-width", 24);
 
     pathEl.setAttribute("class", "circular-time-range-picker__path");
     pathEl.setAttribute("stroke-linecap", "round");
-    pathEl.setAttribute("stroke", "#666");
     pathEl.setAttribute("stroke-width", 24);
     pathEl.setAttribute("fill", "none");
     pathEl.setAttribute("d", "");
     pathEl.dataset["pressedType"] = "path";
 
     startEl.setAttribute("class", "circular-time-range-picker__start");
-    startEl.setAttribute("cx", 150);
-    startEl.setAttribute("cy", 150);
+    startEl.setAttribute("cx", this.width / 2);
+    startEl.setAttribute("cy", this.height / 2);
     startEl.setAttribute("r", 12);
-    startEl.setAttribute("fill", "#000");
     startEl.dataset["pressedType"] = "start";
 
     endEl.setAttribute("class", "circular-time-range-picker__end");
-    endEl.setAttribute("cx", 150);
-    endEl.setAttribute("cy", 150);
+    endEl.setAttribute("cx", this.width / 2);
+    endEl.setAttribute("cy", this.height / 2);
     endEl.setAttribute("r", 12);
-    endEl.setAttribute("fill", "#000");
     endEl.dataset["pressedType"] = "end";
 
     // scales
@@ -140,11 +137,11 @@ class CircularTimeRangePicker extends HTMLElement {
 
         const lineY = this.height / 2 - this.radius + 24;
 
+        scale.setAttribute("class", "circular-time-range-picker__scale-tick");
         scale.setAttribute("x1", this.width / 2);
         scale.setAttribute("y1", lineY);
         scale.setAttribute("x2", this.width / 2);
         scale.setAttribute("y2", lineY + lineLength);
-        scale.setAttribute("stroke", "#000");
         scale.setAttribute("stroke-width", 1);
         scale.setAttribute(
           "transform",
@@ -158,10 +155,10 @@ class CircularTimeRangePicker extends HTMLElement {
 
           const cartesian = polarToCartesian(this.radius - 40, angle);
 
+          text.setAttribute("class", "circular-time-range-picker__scale-text");
           text.setAttribute("x", this.width / 2 + cartesian[0]);
           text.setAttribute("y", this.height / 2 + cartesian[1] + 6);
           text.setAttribute("text-anchor", "middle");
-          text.setAttribute("fill", "#000");
           text.setAttribute("font-size", "12px");
           text.textContent = i;
           scalesGroupEl.appendChild(text);
@@ -186,9 +183,27 @@ class CircularTimeRangePicker extends HTMLElement {
     const style = createSvgElement("style");
 
     style.textContent = `
+      .circular-time-range-picker {
+
+      }
+      .circular-time-range-picker__circle {
+        stroke: var(--md-sys-color-surface, #ccc);
+      }
+      .circular-time-range-picker__start, .circular-time-range-picker__end {
+        fill: var(--md-sys-color-on-surface, #333);
+      }
+      .circular-time-range-picker__path {
+        stroke: var(--md-sys-color-primary, #666);
+      }
       .circular-time-range-picker__scales-group {
-	pointer-events: none;
-	user-select: none;
+        pointer-events: none;
+        user-select: none;
+      }
+      .circular-time-range-picker__scale-tick {
+        stroke: var(--md-sys-color-on-surface, #333);
+      }
+      .circular-time-range-picker__scale-text {
+        fill: var(--md-sys-color-on-surface, #333);
       }
     `;
     shadow.appendChild(style);
