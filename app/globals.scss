@@ -1368,14 +1368,18 @@
 }
 
 body {
+  --md-sys-color-surface-container-highest: rgb(
+    var(--md-sys-color-on-surface-rgb) / 0.04
+  );
   color: var(--md-sys-color-on-surface);
   background: var(--md-sys-color-surface);
 }
 
-.full-link {
-  display: block;
-  width: 100%;
-  height: 100%;
+.container {
+  padding-top: var(--md-list-item-top-space, 12px);
+  padding-bottom: var(--md-list-item-bottom-space, 12px);
+  padding-inline-start: var(--md-list-item-leading-space, 16px);
+  padding-inline-end: var(--md-list-item-trailing-space, 16px);
 }
 
 mwc-top-app-bar-fixed {

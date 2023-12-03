@@ -1,14 +1,22 @@
 import { IRoutine } from "../types";
 import { minutesToHhmm } from "../utils/time";
 
-export default function Routine({ data }: { data: IRoutine }) {
+export default function Routine({
+  data,
+  interactive,
+  end,
+}: {
+  data: IRoutine;
+  interactive?: boolean;
+  end?: React.ReactElement;
+}) {
   const name = data.name;
   const startTime = minutesToHhmm(data.startTime);
   const endTime = minutesToHhmm(data.endTime);
 
   return (
     <>
-      <md-list-item>
+      <md-list-item interactive={interactive}>
         <div slot="headline">{name}</div>
         <div
           slot="supporting-text"
@@ -29,6 +37,7 @@ export default function Routine({ data }: { data: IRoutine }) {
           </md-icon>
           {startTime} - {endTime}
         </div>
+        {end}
       </md-list-item>
       <md-divider></md-divider>
     </>

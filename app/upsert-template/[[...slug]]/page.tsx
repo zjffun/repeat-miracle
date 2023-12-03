@@ -1,15 +1,22 @@
 "use client";
 
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import classNames from "classnames";
+import { nanoid } from "nanoid";
+import { useParams, useRouter } from "next/navigation";
+import {
+  ChangeEvent,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
+import Routine from "@/app/components/routine";
+import SubHeader from "../../components/sub-header";
 import { IRoutine } from "../../types";
 import { getTemplate, upsertTemplate } from "../../utils/templates";
-import { hhmmToMinutes, minutesToHhmm } from "../../utils/time";
+import RoutineDialog from "./routine-dialog";
 
-import { useParams, useRouter } from "next/navigation";
-import SubHeader from "../../components/sub-header";
 import styles from "./page.module.scss";
 
 export default function Page() {
@@ -18,9 +25,11 @@ export default function Page() {
   const templateId = params.slug?.[0];
 
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
   const [templateName, setTemplateName] = useState("");
   const [routines, setRoutines] = useState<IRoutine[]>([]);
+  const [openingRoutineDialog, setOpeningRoutineDialog] = useState(false);
+  const [currentRoutine, setCurrentRoutine] =
+    useState<Partial<IRoutine> | null>(null);
 
   function handleDeleteClick(index: number) {
     setRoutines((routines) => {
@@ -29,26 +38,17 @@ export default function Page() {
   }
 
   function handleAddClick(e: any) {
-    e.preventDefault();
-
-    const form = formRef.current;
-    if (!form) return;
-
-    const formData = new FormData(form);
-    const name = formData.get("name") as string;
-    const startTime = hhmmToMinutes(formData.get("startTime") as string);
-    const endTime = hhmmToMinutes(formData.get("endTime") as string);
-
-    setRoutines((routines) => {
-      return [
-        ...routines,
-        {
-          name,
-          startTime,
-          endTime,
-        },
-      ];
+    setCurrentRoutine({
+      name: "",
+      startTime: 0,
+      endTime: 0,
     });
+    setOpeningRoutineDialog(true);
+  }
+
+  function handleEditClick(data: IRoutine) {
+    setCurrentRoutine(data);
+    setOpeningRoutineDialog(true);
   }
 
   function handleSaveClick() {
@@ -66,6 +66,13 @@ export default function Page() {
     setTemplateName(name);
   }
 
+  useLayoutEffect(() => {
+    import("@material/web/textfield/filled-text-field.js");
+    import("@material/web/fab/fab.js");
+    import("@material/web/dialog/dialog.js");
+    import("@/app/components/circular-time-range-picker.js");
+  }, []);
+
   useEffect(() => {
     if (!templateId) return;
 
@@ -78,7 +85,7 @@ export default function Page() {
   }, [templateId]);
 
   return (
-    <section className={styles.addTemplate}>
+    <>
       <SubHeader
         actionItems={
           <md-icon-button onClick={handleSaveClick}>
@@ -88,56 +95,96 @@ export default function Page() {
       >
         Templates
       </SubHeader>
-      <label>
-        <span>Name: </span>
-        <input
+      <div className={classNames(styles.page, "container")}>
+        <md-filled-text-field
+          style={{
+            width: "100%",
+          }}
+          label="Template Name"
+          type="text"
           value={templateName}
           onInput={handleTemplateNameInput}
           name="name"
-          type="text"
-        />
-      </label>
-      <table className="mt-2 mb-2">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Start time</th>
-            <th>End time</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
+        ></md-filled-text-field>
+
+        <md-list>
           {routines.map((d, i) => {
             return (
-              <tr key={i}>
-                <td>{d.name}</td>
-                <td>{minutesToHhmm(d.startTime)}</td>
-                <td>{minutesToHhmm(d.endTime)}</td>
-                <td onClick={() => handleDeleteClick(i)}>
-                  <FontAwesomeIcon height="1em" icon={faTrash} />
-                </td>
-              </tr>
+              <div key={i} onClick={() => handleEditClick(d)}>
+                <Routine
+                  data={d}
+                  interactive={true}
+                  end={
+                    <md-icon-button
+                      slot="end"
+                      onClick={(e: Event) => {
+                        e.stopPropagation();
+                        handleDeleteClick(i);
+                      }}
+                    >
+                      <md-icon>delete</md-icon>
+                    </md-icon-button>
+                  }
+                ></Routine>
+              </div>
             );
           })}
-        </tbody>
-      </table>
-      <form ref={formRef}>
-        <label>
-          <span>Name: </span>
-          <input name="name" type="text" />
-        </label>
-        <label>
-          <span>Start time: </span>
-          <input name="startTime" type="time" />
-        </label>
-        <label>
-          <span>End time: </span>
-          <input name="endTime" type="time" />
-        </label>
-        <div className="mt-2">
-          <button onClick={handleAddClick}>Add Routine</button>
-        </div>
-      </form>
-    </section>
+        </md-list>
+
+        <md-fab
+          style={{
+            position: "fixed",
+            bottom: "1rem",
+            right: "1rem",
+          }}
+          onClick={handleAddClick}
+          size="small"
+          label="Add Routine"
+          aria-label="Add Routine"
+        >
+          <md-icon slot="icon">add</md-icon>
+        </md-fab>
+
+        <RoutineDialog
+          open={openingRoutineDialog}
+          name={currentRoutine?.name}
+          startTime={currentRoutine?.startTime}
+          endTime={currentRoutine?.endTime}
+          onClose={() => {
+            setCurrentRoutine(null);
+            setOpeningRoutineDialog(false);
+          }}
+          onOk={(params) => {
+            setRoutines((routines) => {
+              // add
+              if (!currentRoutine?.id)
+                return [
+                  ...routines,
+                  {
+                    id: nanoid(),
+                    ...params,
+                  },
+                ];
+
+              // update
+              return routines.map((d) => {
+                if (d.id === currentRoutine.id) {
+                  return {
+                    ...d,
+                    name: params.name,
+                    startTime: params.startTime,
+                    endTime: params.endTime,
+                  };
+                }
+                return d;
+              });
+            });
+
+            setCurrentRoutine(null);
+            setOpeningRoutineDialog(false);
+          }}
+        ></RoutineDialog>
+      </div>
+    </>
   );
 }

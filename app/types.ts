@@ -1,4 +1,5 @@
 export interface IRoutine {
+  id: string;
   name: string;
   startTime: number;
   endTime: number;
