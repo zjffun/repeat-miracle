@@ -7,13 +7,6 @@ body {
   background: var(--md-sys-color-surface);
 }
 
-.container {
-  padding-top: var(--md-list-item-top-space, 12px);
-  padding-bottom: var(--md-list-item-bottom-space, 12px);
-  padding-inline-start: var(--md-list-item-leading-space, 16px);
-  padding-inline-end: var(--md-list-item-trailing-space, 16px);
-}
-
 mwc-top-app-bar-fixed {
   --mdc-theme-primary: var(--md-sys-color-surface);
   --mdc-theme-on-primary: var(--md-sys-color-on-surface);

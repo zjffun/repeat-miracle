@@ -1,12 +1,12 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { ITemplate } from "@/app/types";
 import { getTemplate } from "@/app/utils/templates";
-import Routine from "../../components/routine";
-import SubHeader from "../../components/sub-header";
+import Routine from "../components/routine";
+import SubHeader from "../components/sub-header";
 
 import styles from "./page.module.css";
 
@@ -15,14 +15,18 @@ export default function Page() {
 
   const [template, setTemplate] = useState<ITemplate | null>(null);
 
-  const params = useParams();
+  const params = useSearchParams();
+
+  const id = params.get("id") || "";
 
   function handleEditClick() {
-    router.push(`/upsert-template/${params.slug}`);
+    const searchParams = new URLSearchParams({ id });
+
+    router.push(`/upsert-template?${searchParams.toString()}`);
   }
 
   function updateTemplateData() {
-    const tmp = getTemplate(params.slug as string);
+    const tmp = getTemplate(id as string);
     if (!tmp) {
       return;
     }
@@ -33,7 +37,7 @@ export default function Page() {
   useEffect(() => {
     updateTemplateData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.slug]);
+  }, [id]);
 
   const routines = template?.routines || [];
 

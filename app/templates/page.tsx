@@ -37,8 +37,11 @@ export default function Page() {
       <main className={styles.main}>
         <md-list className="list">
           {templates.map((d) => {
+            const search = new URLSearchParams({
+              id: d.id,
+            }).toString();
             return (
-              <Link key={d.id} href={`/template/${d.id}`}>
+              <Link key={d.id} href={`/template?${search}`}>
                 <md-list-item>
                   <div slot="headline">{d.name}</div>
                 </md-list-item>

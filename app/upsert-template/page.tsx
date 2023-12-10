@@ -2,27 +2,21 @@
 
 import classNames from "classnames";
 import { nanoid } from "nanoid";
-import { useParams, useRouter } from "next/navigation";
-import {
-  ChangeEvent,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
 
 import Routine from "@/app/components/routine";
-import SubHeader from "../../components/sub-header";
-import { IRoutine } from "../../types";
-import { getTemplate, upsertTemplate } from "../../utils/templates";
+import SubHeader from "../components/sub-header";
+import { IRoutine } from "../types";
+import { getTemplate, upsertTemplate } from "../utils/templates";
 import RoutineDialog from "./routine-dialog";
 
 import styles from "./page.module.scss";
 
 export default function Page() {
-  const params = useParams();
+  const params = useSearchParams();
 
-  const templateId = params.slug?.[0];
+  const templateId = params.get("id") || "";
 
   const router = useRouter();
   const [templateName, setTemplateName] = useState("");
@@ -95,7 +89,7 @@ export default function Page() {
       >
         Templates
       </SubHeader>
-      <div className={classNames(styles.page, "container")}>
+      <div className={classNames(styles.page)}>
         <md-filled-text-field
           style={{
             width: "100%",
