@@ -219,6 +219,16 @@ class CircularTimeRangePicker extends HTMLElement {
     document.addEventListener("mousemove", this.handleMouseMove);
     document.addEventListener("mouseup", this.handleMouseUp);
 
+    pathEl.addEventListener("touchstart", this.handleMouseDown);
+    startEl.addEventListener("touchstart", this.handleMouseDown);
+    endEl.addEventListener("touchstart", this.handleMouseDown);
+    document.addEventListener("touchmove", this.handleMouseMove, {
+      // prevent touch scroll
+      // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#passive
+      passive: false,
+    });
+    document.addEventListener("touchend", this.handleMouseUp);
+
     this.calledConnectedCallback = true;
   }
 
@@ -229,6 +239,12 @@ class CircularTimeRangePicker extends HTMLElement {
     this.endEl.removeEventListener("mousedown", this.handleMouseDown);
     document.removeEventListener("mousemove", this.handleMouseMove);
     document.removeEventListener("mouseup", this.handleMouseUp);
+
+    this.pathEl.removeEventListener("touchstart", this.handleMouseDown);
+    this.startEl.removeEventListener("touchstart", this.handleMouseDown);
+    this.endEl.removeEventListener("touchstart", this.handleMouseDown);
+    document.removeEventListener("touchmove", this.handleMouseMove);
+    document.removeEventListener("touchend", this.handleMouseUp);
   }
 
   adoptedCallback() {
@@ -306,18 +322,21 @@ class CircularTimeRangePicker extends HTMLElement {
     this.pressed = pressed;
 
     this.angle = this.getAngle({
-      clientX: e.clientX,
-      clientY: e.clientY,
+      clientX: e.clientX || e.targetTouches[0].clientX,
+      clientY: e.clientY || e.targetTouches[0].clientY,
     });
     this.oldStartAngle = this.startAngle;
     this.oldEndAngle = this.endAngle;
   }.bind(this);
 
   handleMouseMove = function (e) {
+    // prevent touch scroll
+    e.preventDefault();
+
     if (this.pressed) {
       const newAngle = this.getAngle({
-        clientX: e.clientX,
-        clientY: e.clientY,
+        clientX: e.clientX || e.targetTouches[0].clientX,
+        clientY: e.clientY || e.targetTouches[0].clientY,
       });
       var diff = this.angle - newAngle;
 
