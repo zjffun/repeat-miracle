@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 import SubHeader from "../components/sub-header";
 import { ITemplate } from "../types";
-import { getTemplates } from "../utils/templates";
+import { getTemplates } from "../utils/storage/templates";
 
 import styles from "./page.module.css";
 import Link from "next/link";
@@ -41,7 +41,7 @@ export default function Page() {
               id: d.id,
             }).toString();
             return (
-              <Link key={d.id} href={`/template?${search}`}>
+              <Link key={d.id} href={`/upsert-template?${search}`}>
                 <md-list-item>
                   <div slot="headline">{d.name}</div>
                 </md-list-item>

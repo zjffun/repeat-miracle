@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { ITemplate } from "@/app/types";
-import { getTemplate } from "@/app/utils/templates";
+import { getTemplate } from "@/app/utils/storage/templates";
 import Routine from "../components/routine";
 import SubHeader from "../components/sub-header";
 

@@ -1,8 +1,8 @@
-import dayjs from "dayjs";
 import Link from "next/link";
+import { formatDate } from "../utils/time";
 
 export default function Header() {
-  const date = dayjs().format("YYYY-MM-DD");
+  const date = formatDate(new Date());
 
   return (
     <mwc-top-app-bar-fixed>

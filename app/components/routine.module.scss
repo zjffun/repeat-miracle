@@ -1,0 +1,14 @@
+.routine {
+  // margin for top-app-bar-fixed
+  scroll-margin-top: 64px;
+
+  &--done {
+    --background: var(--md-sys-color-tertiary-container);
+  }
+  &--be-doing {
+    --background: var(--md-sys-color-primary-container);
+  }
+  &--to-do {
+    --background: transparent;
+  }
+}
