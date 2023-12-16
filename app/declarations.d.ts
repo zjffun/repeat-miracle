@@ -3,3 +3,5 @@ declare namespace JSX {
     [name: string]: any;
   }
 }
+
+declare module '@dile/dile-toast/dile-toast.js';
