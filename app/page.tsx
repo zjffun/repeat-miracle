@@ -12,6 +12,7 @@ import {
   setDefaultTemplates,
 } from "./utils/storage/templates";
 import { getMinutesFromRange, getSecondsToday } from "./utils/time";
+import AddDefaultTemplatesListItem from "./components/add-default-templates-list-item";
 
 function sortRoutines(routines: IRoutine[]) {
   return routines.sort((a, b) => {
@@ -22,7 +23,7 @@ function sortRoutines(routines: IRoutine[]) {
 export default function Page() {
   const [routines, setRoutines] = useState<IRoutine[]>([]);
 
-  useEffect(() => {
+  function setTodayTemplate() {
     const templates = getTemplates();
 
     const isNewUser = getIsNewUser();
@@ -30,11 +31,16 @@ export default function Page() {
       setDefaultTemplates();
       setIsNewUser(false);
     }
+
     const template = getTodayTemplate(templates);
 
     if (template) {
       setRoutines(sortRoutines(template.routines));
     }
+  }
+
+  useEffect(() => {
+    setTodayTemplate();
   }, []);
 
   useEffect(() => {
@@ -116,12 +122,9 @@ export default function Page() {
           })}
         </md-list>
       ) : (
-        <section>
-          <p>No routines.</p>
-          <p>
-            Please <Link href="/select-template">select a template</Link>.
-          </p>
-        </section>
+        <AddDefaultTemplatesListItem
+          onClick={setTodayTemplate}
+        ></AddDefaultTemplatesListItem>
       )}
     </>
   );

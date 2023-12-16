@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dile/dile-toast": "^2.0.5",
     "@material/material-color-utilities": "^0.2.7",
     "@material/mwc-top-app-bar": "^0.27.0",
     "@material/mwc-top-app-bar-fixed": "^0.27.0",

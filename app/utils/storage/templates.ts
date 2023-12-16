@@ -56,44 +56,25 @@ export function upsertTemplate({
   return newTemplate;
 }
 
-export function setTemplate({
-  id,
-  name,
-  routines,
-}: {
-  id: string;
-  name: string;
-  routines: IRoutine[];
-}) {
-  const templates = getTemplates();
-  const newTemplates = templates.map((d) => {
-    if (d.id === id) {
-      return { ...d, name, routines };
-    }
-    return d;
-  });
-
-  return safeLocalStorageSetItem(StorageKey.Templates, newTemplates);
-}
-
 export function setDefaultTemplates() {
   upsertTemplate({
+    id: "dream-weekdays",
     name: "Dream Weekdays",
     routines: [
       {
-        id: "dream-work-day-1",
+        id: "dream-weekdays-1",
         name: "Sleep",
         startTime: 0,
         endTime: 480,
       },
       {
-        id: "dream-work-day-2",
+        id: "dream-weekdays-2",
         name: "Work",
         startTime: 480,
         endTime: 960,
       },
       {
-        id: "dream-work-day-3",
+        id: "dream-weekdays-3",
         name: "Recreation",
         startTime: 960,
         endTime: 0,
@@ -103,22 +84,23 @@ export function setDefaultTemplates() {
   });
 
   upsertTemplate({
+    id: "dream-weekends",
     name: "Dream Weekends",
     routines: [
       {
-        id: "dream-free-day-1",
+        id: "dream-weekends-1",
         name: "Sleep",
         startTime: 0,
         endTime: 480,
       },
       {
-        id: "dream-free-day-2",
+        id: "dream-weekends-2",
         name: "Learn",
         startTime: 480,
         endTime: 960,
       },
       {
-        id: "dream-free-day-3",
+        id: "dream-weekends-3",
         name: "Recreation",
         startTime: 960,
         endTime: 0,
@@ -154,4 +136,25 @@ export function getTodayTemplate(
   }
 
   return templates[0];
+}
+
+export function processTemplate(template: any): ITemplate {
+  const id = String(template.id);
+  const name = String(template.name);
+  const routines = template.routines.map((r: any) => {
+    return {
+      id: String(r.id),
+      name: String(r.name),
+      startTime: Number(r.startTime),
+      endTime: Number(r.endTime),
+    };
+  });
+  const daysOfWeek = template.daysOfWeek.map((d: any) => Boolean(d));
+
+  return {
+    id,
+    name,
+    routines,
+    daysOfWeek,
+  };
 }

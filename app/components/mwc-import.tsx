@@ -65,6 +65,9 @@ export default function MwcImport() {
     import("@material/web/list/list-item.js");
     import("@material/web/divider/divider.js");
     import("@material/web/button/text-button.js");
+
+    // other components
+    import("@dile/dile-toast/dile-toast.js");
   }, []);
 
   return null;
