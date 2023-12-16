@@ -50,7 +50,7 @@ export function upsertTemplate({
   }
 
   // insert
-  const newTemplate = { id: nanoid(), name, routines, daysOfWeek };
+  const newTemplate = { id: id || nanoid(), name, routines, daysOfWeek };
   const newTemplates = [...templates, newTemplate];
   saveTemplate(newTemplates);
   return newTemplate;

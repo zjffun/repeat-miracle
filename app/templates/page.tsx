@@ -64,7 +64,7 @@ export default function Page() {
           upsertTemplate(processedTemplate);
         }
 
-        setTemplates(templates);
+        setTemplatesFromStorage();
       } catch (error) {
         console.error(error);
         toastRef.current?.open(
