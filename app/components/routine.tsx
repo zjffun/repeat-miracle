@@ -6,19 +6,39 @@ import { minutesToHhmm } from "../utils/time";
 
 import styles from "./routine.module.scss";
 
-export default function Routine({
-  data,
-  interactive,
-  end,
-}: {
-  data: IRoutine;
-  interactive?: boolean;
-  end?: React.ReactElement;
-}) {
-  const routineEl = useRef<HTMLDivElement>(null);
+export function RoutineListItemContent({ data }: { data: IRoutine }) {
   const name = data.name;
   const startTime = minutesToHhmm(data.startTime);
   const endTime = minutesToHhmm(data.endTime);
+
+  return (
+    <>
+      <div slot="headline">{name}</div>
+      <div
+        slot="supporting-text"
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <md-icon
+          style={{
+            fontSize: "1rem",
+            height: "1rem",
+            width: "1rem",
+            marginRight: "0.25rem",
+          }}
+        >
+          schedule
+        </md-icon>
+        {startTime} - {endTime}
+      </div>
+    </>
+  );
+}
+
+export default function Routine({ data }: { data: IRoutine }) {
+  const routineEl = useRef<HTMLDivElement>(null);
 
   const progress = data.progress || 0;
   let state;
@@ -55,28 +75,8 @@ export default function Routine({
           background: `linear-gradient(to right, var(--background) 0%, var(--background) ${progress}%, transparent ${progress}%, transparent 100%)`,
         }}
       >
-        <md-list-item interactive={interactive}>
-          <div slot="headline">{name}</div>
-          <div
-            slot="supporting-text"
-            style={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <md-icon
-              style={{
-                fontSize: "1rem",
-                height: "1rem",
-                width: "1rem",
-                marginRight: "0.25rem",
-              }}
-            >
-              schedule
-            </md-icon>
-            {startTime} - {endTime}
-          </div>
-          {end}
+        <md-list-item>
+          <RoutineListItemContent data={data}></RoutineListItemContent>
         </md-list-item>
       </div>
       <md-divider></md-divider>

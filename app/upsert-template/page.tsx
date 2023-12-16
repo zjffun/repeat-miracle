@@ -5,13 +5,13 @@ import { nanoid } from "nanoid";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
 
-import Routine from "@/app/components/routine";
 import SubHeader from "../components/sub-header";
 import { IRoutine } from "../types";
 import { getTemplate, upsertTemplate } from "../utils/storage/templates";
-import RoutineDialog from "./routine-dialog";
-import DaysDialog from "./days-dialog";
 import { daysOfWeekAbbr, getDefaultDaysArray } from "../utils/time";
+import DaysDialog from "./days-dialog";
+import ListItem from "./list-item";
+import RoutineDialog from "./routine-dialog";
 
 import styles from "./page.module.scss";
 
@@ -68,8 +68,11 @@ export default function Page() {
   }
 
   function handleEditClick(data: IRoutine) {
-    setCurrentRoutine(data);
-    setOpeningRoutineDialog(true);
+    // wait for tap event end
+    setTimeout(() => {
+      setCurrentRoutine(data);
+      setOpeningRoutineDialog(true);
+    }, 0);
   }
 
   function handleSaveClick() {
@@ -147,22 +150,13 @@ export default function Page() {
         <md-list>
           {routines.map((d, i) => {
             return (
-              <div key={i} onClick={() => handleEditClick(d)}>
-                <Routine
+              <div key={d.id}>
+                <ListItem
                   data={d}
-                  interactive={true}
-                  end={
-                    <md-icon-button
-                      slot="end"
-                      onClick={(e: Event) => {
-                        e.stopPropagation();
-                        handleDeleteClick(i);
-                      }}
-                    >
-                      <md-icon>delete</md-icon>
-                    </md-icon-button>
-                  }
-                ></Routine>
+                  onEdit={() => handleEditClick(d)}
+                  onDelete={() => handleDeleteClick(i)}
+                ></ListItem>
+                <md-divider></md-divider>
               </div>
             );
           })}

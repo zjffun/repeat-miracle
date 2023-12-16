@@ -1,20 +1,19 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import AddDefaultTemplatesListItem from "../components/add-default-templates-list-item";
 import SubHeader from "../components/sub-header";
 import { ITemplate } from "../types";
 import {
   getTemplates,
   processTemplate,
   upsertTemplate,
-  setDefaultTemplates,
 } from "../utils/storage/templates";
+import ListItem from "./list-item";
 
 import styles from "./page.module.css";
-import AddDefaultTemplatesListItem from "../components/add-default-templates-list-item";
 
 export default function Page() {
   const router = useRouter();
@@ -27,8 +26,12 @@ export default function Page() {
     router.push("/upsert-template");
   }
 
-  useEffect(() => {
+  function setTemplatesFromStorage() {
     setTemplates(getTemplates());
+  }
+
+  useEffect(() => {
+    setTemplatesFromStorage();
   }, []);
 
   function handleExportClick() {
@@ -73,11 +76,6 @@ export default function Page() {
     input.click();
   }
 
-  function handleAddDefaultClick() {
-    setDefaultTemplates();
-    setTemplates(getTemplates());
-  }
-
   return (
     <>
       <SubHeader
@@ -92,24 +90,20 @@ export default function Page() {
       <main className={styles.main}>
         <md-list className="list">
           {templates.map((d) => {
-            const search = new URLSearchParams({
-              id: d.id,
-            }).toString();
             return (
-              <>
-                <Link key={d.id} href={`/upsert-template?${search}`}>
-                  <md-list-item type="button">
-                    <md-icon slot="start">description</md-icon>
-                    <div slot="headline">{d.name}</div>
-                  </md-list-item>
-                </Link>
-              </>
+              <ListItem
+                key={d.id}
+                data={d}
+                onDelete={setTemplatesFromStorage}
+              ></ListItem>
             );
           })}
 
-          <AddDefaultTemplatesListItem
-            onClick={() => setTemplates(getTemplates())}
-          ></AddDefaultTemplatesListItem>
+          {!templates.length && (
+            <AddDefaultTemplatesListItem
+              onClick={setTemplatesFromStorage}
+            ></AddDefaultTemplatesListItem>
+          )}
 
           <md-divider></md-divider>
 

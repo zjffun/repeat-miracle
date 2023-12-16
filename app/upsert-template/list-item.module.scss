@@ -1,0 +1,19 @@
+.list-item {
+  position: relative;
+  overflow-x: hidden;
+}
+
+.delete-button {
+  --_container-shape: 0;
+  --md-sys-color-primary: var(--md-sys-color-error);
+  --md-sys-color-on-primary: var(--md-sys-color-on-error);
+
+  position: absolute;
+  top: 0;
+  right: -100px;
+  height: 100%;
+  transition: right 0.3s ease-in-out;
+  &--showing {
+    right: 0;
+  }
+}

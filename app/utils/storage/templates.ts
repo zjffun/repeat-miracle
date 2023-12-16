@@ -34,7 +34,7 @@ export function upsertTemplate({
 }) {
   const templates = getTemplates();
 
-  if (id) {
+  if (id && templates.find((d) => d.id === id)) {
     // update
     let newTemplate;
     const newTemplates = templates.map((d) => {
@@ -54,6 +54,12 @@ export function upsertTemplate({
   const newTemplates = [...templates, newTemplate];
   saveTemplate(newTemplates);
   return newTemplate;
+}
+
+export function deleteTemplates(ids: string[]) {
+  const templates = getTemplates();
+  const newTemplates = templates.filter((d) => !ids.includes(d.id));
+  saveTemplate(newTemplates);
 }
 
 export function setDefaultTemplates() {
