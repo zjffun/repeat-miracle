@@ -1,10 +1,11 @@
 "use client";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import AddDefaultTemplatesListItem from "./components/add-default-templates-list-item";
 import Header from "./components/header";
 import Routine from "./components/routine";
 import { IRoutine } from "./types";
+import { sortRoutines } from "./utils/routines";
 import { getIsNewUser, setIsNewUser } from "./utils/storage/newUser";
 import {
   getTemplates,
@@ -12,13 +13,8 @@ import {
   setDefaultTemplates,
 } from "./utils/storage/templates";
 import { getMinutesFromRange, getSecondsToday } from "./utils/time";
-import AddDefaultTemplatesListItem from "./components/add-default-templates-list-item";
 
-function sortRoutines(routines: IRoutine[]) {
-  return routines.sort((a, b) => {
-    return a.startTime - b.startTime || a.endTime - b.endTime;
-  });
-}
+
 
 export default function Page() {
   const [routines, setRoutines] = useState<IRoutine[]>([]);

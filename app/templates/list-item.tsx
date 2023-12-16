@@ -50,9 +50,8 @@ export default function ListItem({
     <div className={styles["list-item"]}>
       <md-list-item
         {...bind()}
-        type="button"
         style={{
-          touchAction: "none",
+          touchAction: "pan-y",
         }}
       >
         <md-icon slot="start">description</md-icon>

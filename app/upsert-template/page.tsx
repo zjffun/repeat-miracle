@@ -7,6 +7,7 @@ import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
 
 import SubHeader from "../components/sub-header";
 import { IRoutine } from "../types";
+import { sortRoutines } from "../utils/routines";
 import { getTemplate, upsertTemplate } from "../utils/storage/templates";
 import { daysOfWeekAbbr, getDefaultDaysArray } from "../utils/time";
 import DaysDialog from "./days-dialog";
@@ -201,26 +202,28 @@ export default function Page() {
             setRoutines((routines) => {
               // add
               if (!currentRoutine?.id)
-                return [
+                return sortRoutines([
                   ...routines,
                   {
                     id: nanoid(),
                     ...params,
                   },
-                ];
+                ]);
 
               // update
-              return routines.map((d) => {
-                if (d.id === currentRoutine.id) {
-                  return {
-                    ...d,
-                    name: params.name,
-                    startTime: params.startTime,
-                    endTime: params.endTime,
-                  };
-                }
-                return d;
-              });
+              return sortRoutines(
+                routines.map((d) => {
+                  if (d.id === currentRoutine.id) {
+                    return {
+                      ...d,
+                      name: params.name,
+                      startTime: params.startTime,
+                      endTime: params.endTime,
+                    };
+                  }
+                  return d;
+                })
+              );
             });
 
             setCurrentRoutine(null);
