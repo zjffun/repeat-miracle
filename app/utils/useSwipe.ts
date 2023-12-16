@@ -13,8 +13,13 @@ export default function useSwipe({
 }) {
   let deltaX = 0;
 
-  return useDrag(({ delta, tap: isTap }) => {
+  return useDrag(({ delta, movement, tap: isTap }) => {
     deltaX += delta[0];
+
+    if (Math.abs(movement[1]) > 50) {
+      return;
+    }
+
     if (isTap) {
       tap?.();
       deltaX = 0;
