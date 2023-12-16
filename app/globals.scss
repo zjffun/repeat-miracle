@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 body {
+  --md-ref-typeface-plain: ui-sans-serif, system-ui, -apple-system;
+
   color: var(--md-sys-color-on-surface);
   background: var(--md-sys-color-surface);
 }

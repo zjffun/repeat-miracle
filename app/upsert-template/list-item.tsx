@@ -1,11 +1,11 @@
 "use client";
 
-import { useDrag } from "@use-gesture/react";
 import classNames from "classnames";
 import { useLayoutEffect, useState } from "react";
 
 import { RoutineListItemContent } from "../components/routine";
 import { IRoutine } from "../types";
+import useSwipe from "../utils/useSwipe";
 
 import styles from "./list-item.module.scss";
 
@@ -28,30 +28,17 @@ export default function ListItem({
     id: data.id,
   }).toString();
 
-  const bind = useDrag(
-    ({ swipe: [swipeX], tap }) => {
-      if (tap) {
-        onEdit?.();
-        return;
-      }
-
-      if (swipeX === -1) {
-        setShowingDelete(true);
-        return;
-      }
-
-      if (swipeX === 1) {
-        setShowingDelete(false);
-        return;
-      }
+  const bind = useSwipe({
+    tap() {
+      onEdit?.();
     },
-    {
-      swipe: {
-        distance: 10,
-        velocity: 0.1,
-      },
-    }
-  );
+    left() {
+      setShowingDelete(true);
+    },
+    right() {
+      setShowingDelete(false);
+    },
+  });
 
   function handleDeleteClick() {
     onDelete?.();

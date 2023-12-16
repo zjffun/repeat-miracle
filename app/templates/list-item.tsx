@@ -1,12 +1,12 @@
 "use client";
 
-import { useDrag } from "@use-gesture/react";
 import classNames from "classnames";
 import { useRouter } from "next/navigation";
 import { useLayoutEffect, useState } from "react";
 
 import { ITemplate } from "../types";
 import { deleteTemplates } from "../utils/storage/templates";
+import useSwipe from "../utils/useSwipe";
 
 import styles from "./list-item.module.scss";
 
@@ -29,30 +29,17 @@ export default function ListItem({
     id: data.id,
   }).toString();
 
-  const bind = useDrag(
-    ({ swipe: [swipeX], tap }) => {
-      if (tap) {
-        router.push(`/upsert-template?${search}`);
-        return;
-      }
-
-      if (swipeX === -1) {
-        setShowingDelete(true);
-        return;
-      }
-
-      if (swipeX === 1) {
-        setShowingDelete(false);
-        return;
-      }
+  const bind = useSwipe({
+    tap() {
+      router.push(`/upsert-template?${search}`);
     },
-    {
-      swipe: {
-        distance: 10,
-        velocity: 0.1,
-      },
-    }
-  );
+    left() {
+      setShowingDelete(true);
+    },
+    right() {
+      setShowingDelete(false);
+    },
+  });
 
   function handleDeleteClick() {
     deleteTemplates([data.id]);

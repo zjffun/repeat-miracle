@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 
 import MwcImport from "./components/mwc-import";
 
 import "./globals.scss";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Repeat Miracle",
@@ -50,7 +47,7 @@ export default function RootLayout({
         />
       </head>
       <MwcImport></MwcImport>
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
