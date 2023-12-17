@@ -12,6 +12,8 @@ export default function useSwipe() {
   let scrolling = true;
   let clientX = 0;
   let clientY = 0;
+  let initClientX = 0;
+  let initClientY = 0;
   let currentListener: ListenerFn | undefined = undefined;
 
   function down(e: any) {
@@ -32,10 +34,11 @@ export default function useSwipe() {
     scrolling = false;
     clientX = e.clientX || e.targetTouches[0].clientX;
     clientY = e.clientY || e.targetTouches[0].clientY;
+    initClientX = clientX;
+    initClientY = clientY;
   }
 
   function move(e: any) {
-    console.log("useSwipe.ts:28", scrolling, swiping);
     if (scrolling) {
       return;
     }
@@ -72,6 +75,24 @@ export default function useSwipe() {
     }
   }
 
+  function up(e: any) {
+    swiping = false;
+    scrolling = true;
+    if (currentListener) {
+      const currentClientX = e.clientX || e.changedTouches[0].clientX;
+      const currentClientY = e.clientY || e.changedTouches[0].clientY;
+
+      const deltaX = currentClientX - initClientX;
+      const deltaY = currentClientY - initClientY;
+
+      if (Math.abs(deltaX) < 3 && Math.abs(deltaY) < 3) {
+        currentListener({
+          type: SwipeType.Tap,
+        });
+      }
+    }
+  }
+
   function addListener(el: HTMLElement, listener: ListenerFn) {
     elListenerWeakMap.set(el, listener);
   }
@@ -83,16 +104,20 @@ export default function useSwipe() {
   useLayoutEffect(() => {
     document.addEventListener("mousedown", down);
     document.addEventListener("mousemove", move);
+    document.addEventListener("mouseup", up);
     document.addEventListener("touchstart", down);
     document.addEventListener("touchmove", move, {
       // passive: false,
     });
+    document.addEventListener("touchend", up);
 
     return () => {
       document.removeEventListener("mousedown", down);
       document.removeEventListener("mousemove", move);
+      document.removeEventListener("mouseup", up);
       document.removeEventListener("touchstart", down);
       document.removeEventListener("touchmove", move);
+      document.removeEventListener("touchend", up);
     };
   });
 

@@ -48,6 +48,8 @@ export default function ListItem({
           setShowingDelete(true);
         } else if (type === SwipeType.Right) {
           setShowingDelete(false);
+        } else if (type === SwipeType.Tap) {
+          router.push(`/upsert-template?${search}`);
         }
       };
 
@@ -57,15 +59,12 @@ export default function ListItem({
         removeListener?.(el);
       };
     }
-  }, [addListener, removeListener]);
+  }, [addListener, removeListener, router, search]);
 
   return (
     <div className={styles["list-item"]}>
       <md-list-item
         ref={elRef}
-        onClick={() => {
-          router.push(`/upsert-template?${search}`);
-        }}
         style={{
           touchAction: "pan-y",
         }}

@@ -37,6 +37,8 @@ export default function ListItem({
           setShowingDelete(true);
         } else if (type === SwipeType.Right) {
           setShowingDelete(false);
+        } else if (type === SwipeType.Tap) {
+          onEdit?.();
         }
       };
 
@@ -46,7 +48,7 @@ export default function ListItem({
         removeListener?.(el);
       };
     }
-  }, [addListener, removeListener]);
+  }, [addListener, removeListener, onEdit]);
 
   function handleDeleteClick() {
     onDelete?.();
@@ -56,9 +58,6 @@ export default function ListItem({
     <div className={styles["list-item"]}>
       <md-list-item
         ref={elRef}
-        onClick={() => {
-          onEdit?.();
-        }}
         style={{
           touchAction: "pan-y",
         }}

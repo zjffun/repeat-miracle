@@ -5,6 +5,7 @@ export enum RoutineState {
 }
 
 export enum SwipeType {
+  Tap = "Tap",
   Left = "Left",
   Right = "Right",
 }
