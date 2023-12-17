@@ -13,29 +13,35 @@ export default function useSwipe({
 }) {
   let deltaX = 0;
 
-  return useDrag(({ delta, movement, tap: isTap }) => {
-    deltaX += delta[0];
+  return useDrag(
+    ({ delta, movement, tap: isTap }) => {
+      deltaX += delta[0];
 
-    if (Math.abs(movement[1]) > 50) {
-      return;
-    }
+      if (Math.abs(movement[1]) > 30) {
+        return;
+      }
 
-    if (isTap) {
-      tap?.();
-      deltaX = 0;
-      return;
-    }
+      if (isTap) {
+        tap?.();
+        deltaX = 0;
+        return;
+      }
 
-    if (deltaX < -30) {
-      left?.();
-      deltaX = 0;
-      return;
-    }
+      if (deltaX < -20) {
+        left?.();
+        deltaX = 0;
+        return;
+      }
 
-    if (deltaX > 30) {
-      right?.();
-      deltaX = 0;
-      return;
+      if (deltaX > 20) {
+        right?.();
+        deltaX = 0;
+        return;
+      }
+    },
+    {
+      filterTaps: true,
+      axis: "x",
     }
-  });
+  );
 }
