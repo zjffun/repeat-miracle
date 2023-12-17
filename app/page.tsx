@@ -14,8 +14,6 @@ import {
 } from "./utils/storage/templates";
 import { getMinutesFromRange, getSecondsToday } from "./utils/time";
 
-
-
 export default function Page() {
   const [routines, setRoutines] = useState<IRoutine[]>([]);
 
@@ -65,9 +63,9 @@ export default function Page() {
             }
           } else {
             // span two days
-            if (secondsToday > endTime) {
+            if (secondsToday <= endTime) {
               progress = Math.round(
-                ((secondsToday - endTime) /
+                ((endTime - secondsToday) /
                   getMinutesFromRange(startTime, endTime)) *
                   100
               );
@@ -76,9 +74,9 @@ export default function Page() {
               if (beDoingNum === 1) {
                 firstBeDoing = true;
               }
-            } else if (secondsToday < startTime) {
+            } else if (secondsToday >= startTime) {
               progress = Math.round(
-                ((startTime - secondsToday) /
+                ((secondsToday - startTime) /
                   getMinutesFromRange(startTime, endTime)) *
                   100
               );
