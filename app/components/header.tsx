@@ -16,7 +16,7 @@ export default function Header() {
       </div>
       <div slot="title">{date}</div>
 
-      <Link href="/templates" slot="actionItems">
+      <Link href="/settings" slot="actionItems">
         <md-icon-button>
           <md-icon>settings</md-icon>
         </md-icon-button>

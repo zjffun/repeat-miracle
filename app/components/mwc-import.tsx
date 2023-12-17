@@ -9,6 +9,8 @@ import {
 } from "@material/material-color-utilities";
 import { useLayoutEffect } from "react";
 
+import { getIsDark } from "../utils/dark";
+
 // https://github.com/material-foundation/material-color-utilities/issues/98#issuecomment-1535869882
 function applySurfaceStyles(theme: Theme, { dark }: { dark: boolean }): void {
   if (dark) {
@@ -50,12 +52,10 @@ export default function MwcImport() {
     // theme
     const theme = themeFromSourceColor(argbFromHex("#00ff00"));
 
-    const systemDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
+    const isDark = getIsDark();
 
-    applyTheme(theme, { target: document.body, dark: systemDark });
-    applySurfaceStyles(theme, { dark: systemDark });
+    applyTheme(theme, { target: document.body, dark: isDark });
+    applySurfaceStyles(theme, { dark: isDark });
 
     // components
     import("@material/mwc-top-app-bar-fixed");

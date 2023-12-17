@@ -1,11 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import AddDefaultTemplatesListItem from "../components/add-default-templates-list-item";
 import SubHeader from "../components/sub-header";
 import { ITemplate } from "../types";
+import { getIsDark, toggleIsDark } from "../utils/dark";
 import {
   getTemplates,
   processTemplate,
@@ -20,6 +21,8 @@ export default function Page() {
 
   const toastRef = useRef<any>(null);
 
+  const [isDark, setIsDark] = useState(true);
+
   const [templates, setTemplates] = useState<ITemplate[]>([]);
 
   function handleAddClick() {
@@ -30,9 +33,10 @@ export default function Page() {
     setTemplates(getTemplates());
   }
 
-  useEffect(() => {
-    setTemplatesFromStorage();
-  }, []);
+  function handleToggleColorSchemeClick() {
+    toggleIsDark();
+    location.reload();
+  }
 
   function handleExportClick() {
     const data = JSON.stringify(templates, null, 2);
@@ -76,6 +80,15 @@ export default function Page() {
     input.click();
   }
 
+  useLayoutEffect(() => {
+    import("@material/web/switch/switch.js");
+  }, []);
+
+  useEffect(() => {
+    setTemplatesFromStorage();
+    setIsDark(getIsDark());
+  }, []);
+
   return (
     <>
       <SubHeader
@@ -85,7 +98,7 @@ export default function Page() {
           </md-icon-button>
         }
       >
-        Templates
+        Settings
       </SubHeader>
       <main className={styles.main}>
         <md-list className="list">
@@ -104,6 +117,21 @@ export default function Page() {
               onClick={setTemplatesFromStorage}
             ></AddDefaultTemplatesListItem>
           )}
+
+          <md-divider></md-divider>
+
+          <md-list-item type="button" onClick={handleToggleColorSchemeClick}>
+            <md-icon slot="start">dark_mode</md-icon>
+            <div slot="headline">Dark Mode</div>
+
+            <md-switch
+              slot="end"
+              {...(isDark && {
+                selected: true,
+              })}
+              show-only-selected-icon
+            ></md-switch>
+          </md-list-item>
 
           <md-divider></md-divider>
 

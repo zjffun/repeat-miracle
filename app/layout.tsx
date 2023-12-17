@@ -24,6 +24,12 @@ export default function RootLayout({
         <meta name="description" content="Set and check routines." />
         <meta name="mobile-web-app-capable" content="yes" />
 
+        {/* https://nextjs.org/docs/messages/react-hydration-error#common-ios-issues */}
+        <meta
+          name="format-detection"
+          content="telephone=no, date=no, email=no, address=no"
+        />
+
         <link rel="apple-touch-icon" href="/favicon_io/apple-touch-icon.png" />
         <link
           rel="icon"

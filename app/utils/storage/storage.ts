@@ -2,6 +2,7 @@ export enum StorageKey {
   IsNewUser = "repeat-miracle-is-new-user",
   Templates = "repeat-miracle-templates",
   TodayInfo = "repeat-miracle-today",
+  Dark = "repeat-miracle-dark",
 }
 
 export function safeLocalStorageGetItem(key: string, fallback: any) {
