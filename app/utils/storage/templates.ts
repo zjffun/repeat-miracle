@@ -145,11 +145,11 @@ export function getTodayTemplate(
 }
 
 export function processTemplate(template: any): ITemplate {
-  const id = String(template.id);
+  const id = String(template.id || nanoid());
   const name = String(template.name);
   const routines = template.routines.map((r: any) => {
     return {
-      id: String(r.id),
+      id: String(r.id || nanoid()),
       name: String(r.name),
       startTime: Number(r.startTime),
       endTime: Number(r.endTime),

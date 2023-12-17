@@ -12,6 +12,7 @@ import {
   processTemplate,
   upsertTemplate,
 } from "../utils/storage/templates";
+import useSwipe from "../utils/useSwipe";
 import ListItem from "./list-item";
 
 import styles from "./page.module.css";
@@ -24,6 +25,8 @@ export default function Page() {
   const [isDark, setIsDark] = useState(true);
 
   const [templates, setTemplates] = useState<ITemplate[]>([]);
+
+  const { addListener, removeListener } = useSwipe();
 
   function handleAddClick() {
     router.push("/upsert-template");
@@ -108,6 +111,8 @@ export default function Page() {
                 key={d.id}
                 data={d}
                 onDelete={setTemplatesFromStorage}
+                addListener={addListener}
+                removeListener={removeListener}
               ></ListItem>
             );
           })}

@@ -1,7 +1,12 @@
 export enum RoutineState {
-  Done = "done",
-  BeDoing = "beDoing",
-  Todo = "todo",
+  Done = "Done",
+  BeDoing = "BeDoing",
+  Todo = "Todo",
+}
+
+export enum SwipeType {
+  Left = "Left",
+  Right = "Right",
 }
 
 export interface IRoutine {

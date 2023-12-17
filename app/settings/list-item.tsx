@@ -2,22 +2,28 @@
 
 import classNames from "classnames";
 import { useRouter } from "next/navigation";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
-import { ITemplate } from "../types";
+import { ITemplate, SwipeType } from "../types";
 import { deleteTemplates } from "../utils/storage/templates";
-import useSwipe from "../utils/useSwipe";
+import { ListenerFn } from "../utils/useSwipe";
 
 import styles from "./list-item.module.scss";
 
 export default function ListItem({
   data,
   onDelete,
+  addListener,
+  removeListener,
 }: {
   data: ITemplate;
   onDelete?: () => void;
+  addListener?: (el: HTMLElement, listener: ListenerFn) => void;
+  removeListener?: (el: HTMLElement) => void;
 }) {
   const router = useRouter();
+
+  const elRef = useRef<HTMLElement>(null);
 
   const [showingDelete, setShowingDelete] = useState(false);
 
@@ -29,27 +35,37 @@ export default function ListItem({
     id: data.id,
   }).toString();
 
-  const bind = useSwipe({
-    tap() {
-      router.push(`/upsert-template?${search}`);
-    },
-    left() {
-      setShowingDelete(true);
-    },
-    right() {
-      setShowingDelete(false);
-    },
-  });
-
   function handleDeleteClick() {
     deleteTemplates([data.id]);
     onDelete?.();
   }
 
+  useLayoutEffect(() => {
+    const el = elRef.current;
+    if (el) {
+      const listener = ({ type }: { type: SwipeType }) => {
+        if (type === SwipeType.Left) {
+          setShowingDelete(true);
+        } else if (type === SwipeType.Right) {
+          setShowingDelete(false);
+        }
+      };
+
+      addListener?.(el, listener);
+
+      return () => {
+        removeListener?.(el);
+      };
+    }
+  }, [addListener, removeListener]);
+
   return (
     <div className={styles["list-item"]}>
       <md-list-item
-        {...bind()}
+        ref={elRef}
+        onClick={() => {
+          router.push(`/upsert-template?${search}`);
+        }}
         style={{
           touchAction: "pan-y",
         }}

@@ -330,6 +330,10 @@ class CircularTimeRangePicker extends HTMLElement {
   }.bind(this);
 
   handleMouseMove = function (e) {
+    if (!this.pressed) {
+      return;
+    }
+
     // prevent touch scroll
     e.preventDefault();
 
@@ -374,6 +378,10 @@ class CircularTimeRangePicker extends HTMLElement {
   }.bind(this);
 
   handleMouseUp = function (e) {
+    if (!this.pressed) {
+      return;
+    }
+
     this.pressed = null;
     this.dispatchEvent(
       new CustomEvent("change", {

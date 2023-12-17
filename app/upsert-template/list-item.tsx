@@ -1,11 +1,11 @@
 "use client";
 
 import classNames from "classnames";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 import { RoutineListItemContent } from "../components/routine";
-import { IRoutine } from "../types";
-import useSwipe from "../utils/useSwipe";
+import { IRoutine, SwipeType } from "../types";
+import { ListenerFn } from "../utils/useSwipe";
 
 import styles from "./list-item.module.scss";
 
@@ -13,32 +13,40 @@ export default function ListItem({
   data,
   onEdit,
   onDelete,
+  addListener,
+  removeListener,
 }: {
   data: IRoutine;
   onEdit?: () => void;
   onDelete?: () => void;
+  addListener?: (el: HTMLElement, listener: ListenerFn) => void;
+  removeListener?: (el: HTMLElement) => void;
 }) {
+  const elRef = useRef<HTMLElement>(null);
   const [showingDelete, setShowingDelete] = useState(false);
 
   useLayoutEffect(() => {
     import("@material/web/button/filled-button.js");
   }, []);
 
-  const search = new URLSearchParams({
-    id: data.id,
-  }).toString();
+  useLayoutEffect(() => {
+    const el = elRef.current;
+    if (el) {
+      const listener = ({ type }: { type: SwipeType }) => {
+        if (type === SwipeType.Left) {
+          setShowingDelete(true);
+        } else if (type === SwipeType.Right) {
+          setShowingDelete(false);
+        }
+      };
 
-  const bind = useSwipe({
-    tap() {
-      onEdit?.();
-    },
-    left() {
-      setShowingDelete(true);
-    },
-    right() {
-      setShowingDelete(false);
-    },
-  });
+      addListener?.(el, listener);
+
+      return () => {
+        removeListener?.(el);
+      };
+    }
+  }, [addListener, removeListener]);
 
   function handleDeleteClick() {
     onDelete?.();
@@ -47,7 +55,10 @@ export default function ListItem({
   return (
     <div className={styles["list-item"]}>
       <md-list-item
-        {...bind()}
+        ref={elRef}
+        onClick={() => {
+          onEdit?.();
+        }}
         style={{
           touchAction: "pan-y",
         }}

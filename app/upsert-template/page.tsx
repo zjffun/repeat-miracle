@@ -10,6 +10,7 @@ import { IRoutine } from "../types";
 import { sortRoutines } from "../utils/routines";
 import { getTemplate, upsertTemplate } from "../utils/storage/templates";
 import { daysOfWeekAbbr, getDefaultDaysArray } from "../utils/time";
+import useSwipe from "../utils/useSwipe";
 import DaysDialog from "./days-dialog";
 import ListItem from "./list-item";
 import RoutineDialog from "./routine-dialog";
@@ -31,6 +32,8 @@ export default function Page() {
   const [currentDays, setCurrentDays] = useState<boolean[]>(
     getDefaultDaysArray()
   );
+
+  const { addListener, removeListener } = useSwipe();
 
   let selectDaysOfWeekText = "Select Days";
 
@@ -156,6 +159,8 @@ export default function Page() {
                   data={d}
                   onEdit={() => handleEditClick(d)}
                   onDelete={() => handleDeleteClick(i)}
+                  addListener={addListener}
+                  removeListener={removeListener}
                 ></ListItem>
                 <md-divider></md-divider>
               </div>
