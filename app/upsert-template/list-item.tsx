@@ -38,7 +38,10 @@ export default function ListItem({
         } else if (type === SwipeType.Right) {
           setShowingDelete(false);
         } else if (type === SwipeType.Tap) {
-          onEdit?.();
+          // wait for touch end
+          setTimeout(() => {
+            onEdit?.();
+          }, 100);
         }
       };
 
