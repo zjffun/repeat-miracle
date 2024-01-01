@@ -964,7 +964,7 @@
 
 "@dile/dile-toast@^2.0.5":
   version "2.0.5"
-  resolved "https://registry.npmjs.org/@dile/dile-toast/-/dile-toast-2.0.5.tgz#f5b8f43a97b80dd8698e8c20105222f082f5ed9c"
+  resolved "https://registry.npmjs.org/@dile/dile-toast/-/dile-toast-2.0.5.tgz"
   integrity sha512-mhJLPm6HYt80B428g9vk+pAeYDjgqUlvw6D4MhzcrKnGKUTH1fzV3RdTfi19jekjnmXi6ZBCILZaYVk8N1Wjhw==
   dependencies:
     lit "^2.6.1"
@@ -4214,6 +4214,11 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
+
+svg-arc-center-endpoint@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.npmjs.org/svg-arc-center-endpoint/-/svg-arc-center-endpoint-0.0.2.tgz#431eec5e59b26c4ca6e1850dbfe48c842cd70add"
+  integrity sha512-/GT+YAv8KQySrIPCtCpdV24U2bFhjHxMqo39np81FbEA2L9RYHXTrCWKfy9iIvHxA91elZK4xRA4nZ1XBLFC+g==
 
 tailwindcss@^3.3.0:
   version "3.3.5"

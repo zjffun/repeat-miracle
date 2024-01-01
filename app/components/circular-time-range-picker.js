@@ -1,3 +1,5 @@
+import { centerToEndpoint, getPointForAngle } from "svg-arc-center-endpoint";
+
 const anglePerSecond = 360 / (24 * 60 * 60);
 
 function createSvgElement(tagName) {
@@ -8,27 +10,31 @@ function getFixedNumberString(number) {
   return number.toFixed(6);
 }
 
-function polarToCartesian(radius, angle) {
-  const radians = ((angle - 90) * Math.PI) / 180;
-  return [radius * Math.cos(radians), radius * Math.sin(radians)];
-}
-
 function svgArcPath(x, y, radius, startAngle, endAngle) {
-  const start_xy = polarToCartesian(radius, startAngle);
-  const end_xy = polarToCartesian(radius, endAngle);
+  const {
+    x1,
+    x2,
+    y1,
+    y2,
+    fa: largeArcFlag,
+    fs: sweepFlag,
+  } = centerToEndpoint({
+    cx: x,
+    cy: y,
+    rx: radius,
+    ry: radius,
+    phi: 0,
+    theta: startAngle,
+    dTheta: mod(endAngle - startAngle, 360),
+  });
 
-  const long = mod(endAngle - startAngle, 360) > 180;
-
-  // end to start is clockwise
-  const sweep = false;
-
-  const path = `M ${getFixedNumberString(x + end_xy[0])} ${getFixedNumberString(
-    y + end_xy[1]
-  )} A ${getFixedNumberString(radius)} ${getFixedNumberString(radius)} 0 ${
-    long ? "1" : "0"
-  } ${sweep ? "1" : "0"} ${getFixedNumberString(
-    x + start_xy[0]
-  )} ${getFixedNumberString(y + start_xy[1])}`;
+  const path = `M ${getFixedNumberString(x1)} ${getFixedNumberString(
+    y1
+  )} A ${getFixedNumberString(radius)} ${getFixedNumberString(
+    radius
+  )} 0 ${largeArcFlag} ${sweepFlag} ${getFixedNumberString(
+    x2
+  )} ${getFixedNumberString(y2)}`;
 
   return path;
 }
@@ -153,11 +159,18 @@ class CircularTimeRangePicker extends HTMLElement {
         if (j === 0 && i % 2 === 0) {
           const text = createSvgElement("text");
 
-          const cartesian = polarToCartesian(this.radius - 40, angle);
+          const [x, y] = getPointForAngle({
+            cx: this.width / 2,
+            cy: this.height / 2,
+            rx: this.radius - 40,
+            ry: this.radius - 40,
+            phi: 0,
+            theta: angle - 90,
+          });
 
           text.setAttribute("class", "circular-time-range-picker__scale-text");
-          text.setAttribute("x", this.width / 2 + cartesian[0]);
-          text.setAttribute("y", this.height / 2 + cartesian[1] + 6);
+          text.setAttribute("x", x);
+          text.setAttribute("y", y + 6);
           text.setAttribute("text-anchor", "middle");
           text.setAttribute("font-size", "12px");
           text.textContent = i;
@@ -277,39 +290,41 @@ class CircularTimeRangePicker extends HTMLElement {
   }
 
   draw() {
-    this.pathEl.setAttribute(
-      "d",
-      svgArcPath(
-        this.width / 2,
-        this.height / 2,
-        this.radius,
-        this.startAngle,
-        this.endAngle
-      )
-    );
-
     const halfWidth = this.width / 2;
     const halfHeight = this.height / 2;
 
-    const startCartesian = polarToCartesian(this.radius, this.startAngle);
-    this.startEl.setAttribute(
-      "cx",
-      getFixedNumberString(halfWidth + startCartesian[0])
-    );
-    this.startEl.setAttribute(
-      "cy",
-      getFixedNumberString(halfHeight + startCartesian[1])
+    this.pathEl.setAttribute(
+      "d",
+      svgArcPath(
+        halfWidth,
+        halfHeight,
+        this.radius,
+        this.startAngle - 90,
+        this.endAngle - 90
+      )
     );
 
-    const endCartesian = polarToCartesian(this.radius, this.endAngle);
-    this.endEl.setAttribute(
-      "cx",
-      getFixedNumberString(halfWidth + endCartesian[0])
-    );
-    this.endEl.setAttribute(
-      "cy",
-      getFixedNumberString(halfHeight + endCartesian[1])
-    );
+    const [startX, startY] = getPointForAngle({
+      cx: halfWidth,
+      cy: halfHeight,
+      rx: this.radius,
+      ry: this.radius,
+      phi: 0,
+      theta: this.startAngle - 90,
+    });
+    this.startEl.setAttribute("cx", getFixedNumberString(startX));
+    this.startEl.setAttribute("cy", getFixedNumberString(startY));
+
+    const [endX, endY] = getPointForAngle({
+      cx: halfWidth,
+      cy: halfHeight,
+      rx: this.radius,
+      ry: this.radius,
+      phi: 0,
+      theta: this.endAngle - 90,
+    });
+    this.endEl.setAttribute("cx", getFixedNumberString(endX));
+    this.endEl.setAttribute("cy", getFixedNumberString(endY));
   }
 
   handleMouseDown = function (e) {
