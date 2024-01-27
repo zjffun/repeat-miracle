@@ -13,7 +13,7 @@ import useSwipe from "../utils/useSwipe";
 import ConfirmDialog from "./confirm-dialog";
 import DaysDialog from "./days-dialog";
 import ListItem from "./list-item";
-import RoutineDialog from "./routine-dialog";
+import RoutineDialog from "./routine-drawer";
 
 import styles from "./page.module.scss";
 

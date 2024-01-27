@@ -1,0 +1,31 @@
+.drawer {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  flex-direction: column;
+  background: var(--md-sys-color-surface-container-high);
+  overflow-y: scroll;
+  z-index: 10;
+
+  &--open {
+    display: flex;
+  }
+}
+
+.content {
+  flex: 1 1 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  height: 64px;
+
+  &Title {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}

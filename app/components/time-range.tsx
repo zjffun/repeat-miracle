@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useLayoutEffect, useState, useRef } from "react";
 import { minutesToHhmm, minutesToReadable } from "../utils/time";
 
@@ -23,6 +25,7 @@ export default function TimeRange({
   const circularTimeRangePickerRef = useRef<HTMLElement>(null);
   const [currentStartMinute, setCurrentStartMinute] = useState(startMinute);
   const [currentEndMinute, setCurrentEndMinute] = useState(endMinute);
+  const [width, setWidth] = useState(250);
 
   useLayoutEffect(() => {
     const circularTimeRangePickerEl = circularTimeRangePickerRef.current;
@@ -51,6 +54,10 @@ export default function TimeRange({
   });
 
   useEffect(() => {
+    setWidth(Math.min(window.document.body.clientWidth, 500));
+  }, []);
+
+  useEffect(() => {
     setCurrentStartMinute(startMinute);
     setCurrentEndMinute(endMinute);
   }, [startMinute, endMinute]);
@@ -65,11 +72,20 @@ export default function TimeRange({
       >
         {minutesToHhmm(currentStartMinute)} - {minutesToHhmm(currentEndMinute)}
       </p>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
         <circular-time-range-picker
           ref={circularTimeRangePickerRef}
           start={startMinute * 60}
           end={endMinute * 60}
+          width={width * 0.9}
+          height={width * 0.9}
+          radius={width * 0.4}
+          stroke-width={width * 0.1}
         ></circular-time-range-picker>
       </div>
       <p

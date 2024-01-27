@@ -66,9 +66,13 @@ class CircularTimeRangePicker extends HTMLElement {
     super();
   }
 
-  width = 250;
-  height = 250;
-  radius = 100;
+  width = parseInt(this.getAttribute("width"), 10) || 250;
+  height = parseInt(this.getAttribute("height"), 10) || 250;
+  radius = parseInt(this.getAttribute("radius"), 10) || 100;
+  strokeWidth = parseInt(this.getAttribute("stroke-width"), 10) || 24;
+  tickMargin = 6;
+  textSize = 12;
+  textMargin = 6;
   startAngle = 0;
   endAngle = 0;
   oldStartAngle = 0;
@@ -81,6 +85,7 @@ class CircularTimeRangePicker extends HTMLElement {
   pathEl = null;
   startEl = null;
   endEl = null;
+  scalesGroupEl = null;
 
   connectedCallback() {
     const shadow = this.attachShadow({ mode: "open" });
@@ -93,91 +98,32 @@ class CircularTimeRangePicker extends HTMLElement {
     const endEl = createSvgElement("circle");
     const scalesGroupEl = createSvgElement("g");
 
+    this.svgEl = svgEl;
+    this.circleEl = circleEl;
+    this.startEl = startEl;
+    this.endEl = endEl;
+    this.pathEl = pathEl;
+    this.scalesGroupEl = scalesGroupEl;
+
     // init
-    svgEl.setAttribute("viewBox", `0 0 ${this.width} ${this.height}`);
-    svgEl.setAttribute("width", this.width);
-    svgEl.setAttribute("height", this.height);
     svgEl.setAttribute("class", "circular-time-range-picker");
 
     circleEl.setAttribute("class", "circular-time-range-picker__circle");
-    circleEl.setAttribute("cx", this.width / 2);
-    circleEl.setAttribute("cy", this.height / 2);
-    circleEl.setAttribute("r", this.radius);
     circleEl.setAttribute("fill", "none");
-    circleEl.setAttribute("stroke-width", 24);
 
     pathEl.setAttribute("class", "circular-time-range-picker__path");
     pathEl.setAttribute("stroke-linecap", "round");
-    pathEl.setAttribute("stroke-width", 24);
     pathEl.setAttribute("fill", "none");
     pathEl.setAttribute("d", "");
     pathEl.dataset["pressedType"] = "path";
 
     startEl.setAttribute("class", "circular-time-range-picker__start");
-    startEl.setAttribute("cx", this.width / 2);
-    startEl.setAttribute("cy", this.height / 2);
-    startEl.setAttribute("r", 12);
     startEl.dataset["pressedType"] = "start";
 
     endEl.setAttribute("class", "circular-time-range-picker__end");
-    endEl.setAttribute("cx", this.width / 2);
-    endEl.setAttribute("cy", this.height / 2);
-    endEl.setAttribute("r", 12);
     endEl.dataset["pressedType"] = "end";
 
-    // scales
-    scalesGroupEl.setAttribute(
-      "class",
-      "circular-time-range-picker__scales-group"
-    );
-    for (let i = 0; i < 24; i++) {
-      for (let j = 0; j < 4; j++) {
-        // line
-        let lineLength = 1;
-        if (j === 0) {
-          lineLength = 3;
-        }
-
-        const angle = i * (360 / 24) + j * (360 / 24 / 4);
-        const scale = createSvgElement("line");
-
-        const lineY = this.height / 2 - this.radius + 24;
-
-        scale.setAttribute("class", "circular-time-range-picker__scale-tick");
-        scale.setAttribute("x1", this.width / 2);
-        scale.setAttribute("y1", lineY);
-        scale.setAttribute("x2", this.width / 2);
-        scale.setAttribute("y2", lineY + lineLength);
-        scale.setAttribute("stroke-width", 1);
-        scale.setAttribute(
-          "transform",
-          `rotate(${angle} ${this.width / 2} ${this.height / 2})`
-        );
-        scalesGroupEl.appendChild(scale);
-
-        // text
-        if (j === 0 && i % 2 === 0) {
-          const text = createSvgElement("text");
-
-          const [x, y] = getPointForAngle({
-            cx: this.width / 2,
-            cy: this.height / 2,
-            rx: this.radius - 40,
-            ry: this.radius - 40,
-            phi: 0,
-            theta: angle - 90,
-          });
-
-          text.setAttribute("class", "circular-time-range-picker__scale-text");
-          text.setAttribute("x", x);
-          text.setAttribute("y", y + 6);
-          text.setAttribute("text-anchor", "middle");
-          text.setAttribute("font-size", "12px");
-          text.textContent = i;
-          scalesGroupEl.appendChild(text);
-        }
-      }
-    }
+    this.resize();
 
     // append
     svgEl.appendChild(circleEl);
@@ -185,12 +131,6 @@ class CircularTimeRangePicker extends HTMLElement {
     svgEl.appendChild(startEl);
     svgEl.appendChild(endEl);
     svgEl.appendChild(scalesGroupEl);
-
-    this.svgEl = svgEl;
-    this.circleEl = circleEl;
-    this.startEl = startEl;
-    this.endEl = endEl;
-    this.pathEl = pathEl;
 
     // style
     const style = createSvgElement("style");
@@ -273,6 +213,31 @@ class CircularTimeRangePicker extends HTMLElement {
       this.endAngle = secondToAngle(newValue);
     }
 
+    if (name === "width") {
+      this.width = parseInt(newValue, 10);
+      this.resize();
+    }
+
+    if (name === "height") {
+      this.height = parseInt(newValue, 10);
+      this.resize();
+    }
+
+    if (name === "radius") {
+      this.radius = parseInt(newValue, 10);
+      this.resize();
+    }
+
+    if (name === "stroke-width") {
+      this.strokeWidth = parseInt(newValue, 10);
+      this.resize();
+    }
+    console.log(
+      "circular-time-range-picker.js:215",
+      name,
+      this.getAttribute("stroke-width")
+    );
+
     if (this.calledConnectedCallback && oldValue !== newValue) {
       this.draw();
     }
@@ -287,6 +252,93 @@ class CircularTimeRangePicker extends HTMLElement {
     );
 
     return angle;
+  }
+
+  resize() {
+    // dom
+    const { svgEl, circleEl, pathEl, startEl, endEl, scalesGroupEl } = this;
+
+    // init
+    svgEl.setAttribute("viewBox", `0 0 ${this.width} ${this.height}`);
+    svgEl.setAttribute("width", this.width);
+    svgEl.setAttribute("height", this.height);
+
+    circleEl.setAttribute("cx", this.width / 2);
+    circleEl.setAttribute("cy", this.height / 2);
+    circleEl.setAttribute("r", this.radius);
+    circleEl.setAttribute("stroke-width", this.strokeWidth);
+
+    pathEl.setAttribute("stroke-width", this.strokeWidth);
+
+    startEl.setAttribute("cx", this.width / 2);
+    startEl.setAttribute("cy", this.height / 2);
+    startEl.setAttribute("r", this.strokeWidth / 2);
+
+    endEl.setAttribute("cx", this.width / 2);
+    endEl.setAttribute("cy", this.height / 2);
+    endEl.setAttribute("r", this.strokeWidth / 2);
+
+    // scales
+    scalesGroupEl.innerHTML = "";
+    for (let i = 0; i < 24; i++) {
+      for (let j = 0; j < 4; j++) {
+        // line
+        let lineLength = 1;
+        if (j === 0) {
+          lineLength = 3;
+        }
+
+        const angle = i * (360 / 24) + j * (360 / 24 / 4);
+        const scale = createSvgElement("line");
+
+        const lineY =
+          this.height / 2 -
+          this.radius +
+          this.strokeWidth / 2 +
+          this.tickMargin;
+
+        scale.setAttribute("class", "circular-time-range-picker__scale-tick");
+        scale.setAttribute("x1", this.width / 2);
+        scale.setAttribute("y1", lineY);
+        scale.setAttribute("x2", this.width / 2);
+        scale.setAttribute("y2", lineY + lineLength);
+        scale.setAttribute("stroke-width", 1);
+        scale.setAttribute(
+          "transform",
+          `rotate(${angle} ${this.width / 2} ${this.height / 2})`
+        );
+        scalesGroupEl.appendChild(scale);
+
+        // text
+        if (j === 0 && i % 2 === 0) {
+          const text = createSvgElement("text");
+
+          const r =
+            this.radius -
+            this.strokeWidth / 2 -
+            this.tickMargin -
+            this.textSize -
+            this.textMargin;
+
+          const [x, y] = getPointForAngle({
+            cx: this.width / 2,
+            cy: this.height / 2,
+            rx: r,
+            ry: r,
+            phi: 0,
+            theta: angle - 90,
+          });
+
+          text.setAttribute("class", "circular-time-range-picker__scale-text");
+          text.setAttribute("x", x);
+          text.setAttribute("y", y + this.textSize / 2);
+          text.setAttribute("text-anchor", "middle");
+          text.setAttribute("font-size", `${this.textSize}px`);
+          text.textContent = i;
+          scalesGroupEl.appendChild(text);
+        }
+      }
+    }
   }
 
   draw() {
