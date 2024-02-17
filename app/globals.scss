@@ -5,6 +5,8 @@
 body {
   --md-ref-typeface-plain: ui-sans-serif, system-ui, -apple-system;
 
+  // Can't set max width of body, because <mwc-top-app-bar-fixed> will expand to fill the entire screen width
+
   color: var(--md-sys-color-on-surface);
   background: var(--md-sys-color-surface);
 }
