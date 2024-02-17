@@ -62,7 +62,6 @@ class CircularTimeRangePicker extends HTMLElement {
   static observedAttributes = ["start", "end"];
 
   constructor() {
-    // Always call super first in constructor
     super();
   }
 
@@ -232,11 +231,6 @@ class CircularTimeRangePicker extends HTMLElement {
       this.strokeWidth = parseInt(newValue, 10);
       this.resize();
     }
-    console.log(
-      "circular-time-range-picker.js:215",
-      name,
-      this.getAttribute("stroke-width")
-    );
 
     if (this.calledConnectedCallback && oldValue !== newValue) {
       this.draw();
